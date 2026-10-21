@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Acceso</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/login.js" defer></script>
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <div class="login-art" aria-hidden="true">
+      <span class="beam beam-one"></span>
+      <span class="beam beam-two"></span>
+      <span class="beam beam-three"></span>
+    </div>
+
+    <section class="login-card" aria-labelledby="login-title">
+      <div id="config-error" class="config-error" hidden></div>
+
+      <form id="login-form" novalidate>
+        <p class="eyebrow">Acceso privado</p>
+        <h1 id="login-title">Iniciar sesión</h1>
+        <p class="login-copy">Introduce tus credenciales para continuar.</p>
+
+        <label for="login-email">Correo electrónico</label>
+        <input id="login-email" name="email" type="email" autocomplete="username" required placeholder="nombre@empresa.com">
+
+        <label for="login-password">Contraseña</label>
+        <div class="password-field">
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required placeholder="Tu contraseña">
+          <button id="toggle-password" type="button" class="icon-button" aria-label="Mostrar contraseña">◉</button>
+        </div>
+
+        <button id="login-submit" class="primary-button full-width" type="submit">Entrar <span aria-hidden="true">→</span></button>
+        <button id="show-reset" class="link-button" type="button">¿Has olvidado tu contraseña?</button>
+      </form>
+
+      <form id="reset-request-form" hidden novalidate>
+        <p class="eyebrow">Recuperación</p>
+        <h1>Restablecer contraseña</h1>
+        <p class="login-copy">Te enviaremos un enlace si el correo pertenece a una cuenta autorizada.</p>
+
+        <label for="reset-email">Correo electrónico</label>
+        <input id="reset-email" name="email" type="email" autocomplete="email" required placeholder="nombre@empresa.com">
+
+        <button id="reset-submit" class="primary-button full-width" type="submit">Enviar enlace</button>
+        <button id="show-login" class="link-button" type="button">Volver al inicio de sesión</button>
+      </form>
+
+      <div id="auth-status" class="form-status" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+</body>
+</html>

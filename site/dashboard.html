@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Insurance News Intelligence</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/dashboard.js" defer></script>
+</head>
+<body class="app-page">
+  <div id="fatal-error" class="fatal-error" hidden>
+    <h1>No se puede iniciar el dashboard</h1>
+    <p id="fatal-error-message"></p>
+    <a href="index.html" class="primary-button">Volver al acceso</a>
+  </div>
+
+  <div id="app-shell" class="app-shell" hidden>
+    <header class="app-header">
+      <a class="internal-brand" href="dashboard.html" aria-label="Inicio del dashboard">
+        <img src="assets/img/accenture-logo-white.png" alt="Accenture">
+        <span>Insurance News Intelligence</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Navegación principal">
+        <button id="nav-dashboard" type="button" class="nav-button is-active">Noticias</button>
+        <button id="nav-settings" type="button" class="nav-button">Configuración</button>
+      </nav>
+
+      <div class="user-menu">
+        <span class="user-avatar user-initials">US</span>
+        <span class="current-user-email">Usuario</span>
+        <button type="button" class="secondary-button logout-button">Cerrar sesión</button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section id="dashboard-view" class="view-section" aria-labelledby="dashboard-title">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow purple">Business intelligence</p>
+            <h1 id="dashboard-title">Radar de noticias</h1>
+            <p>Histórico del sector asegurador con preferencias personales y señales compartidas.</p>
+          </div>
+          <div id="last-update" class="last-update">Sin datos de actualización</div>
+        </div>
+
+        <section class="metrics-grid" aria-label="Indicadores">
+          <article class="metric-card">
+            <span class="metric-label">Noticias encontradas</span>
+            <strong id="metric-total">0</strong>
+            <small>Con los filtros actuales</small>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Compañías seleccionadas</span>
+            <strong id="metric-companies">0</strong>
+            <small>Filtro temporal</small>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Noticias patrocinadas</span>
+            <strong id="metric-sponsored">0</strong>
+            <small>En compañías y periodo</small>
+          </article>
+          <article class="metric-card metric-flagged">
+            <span class="metric-label">Con bandera</span>
+            <strong id="metric-flagged">0</strong>
+            <small>Importantes para todos</small>
+          </article>
+        </section>
+
+        <section class="filter-panel" aria-label="Filtros de noticias">
+          <div class="filter-group filter-companies">
+            <span class="filter-label">Compañías</span>
+            <div class="company-filter-row">
+              <div id="selected-company-chips" class="company-chips"></div>
+              <button id="add-company-filter" type="button" class="secondary-button compact">+ Añadir compañías</button>
+            </div>
+          </div>
+
+          <label class="filter-group">
+            <span class="filter-label">Periodo</span>
+            <select id="period-filter">
+              <option value="7">Últimos 7 días</option>
+              <option value="30" selected>Últimos 30 días</option>
+              <option value="90">Últimos 90 días</option>
+              <option value="365">Último año</option>
+              <option value="0">Todo el histórico</option>
+            </select>
+          </label>
+
+          <label class="filter-group">
+            <span class="filter-label">Patrocinada</span>
+            <select id="sponsored-filter">
+              <option value="all">Todas</option>
+              <option value="yes">Solo patrocinadas</option>
+              <option value="no">Solo no patrocinadas</option>
+            </select>
+          </label>
+
+          <label class="filter-group filter-search">
+            <span class="filter-label">Buscar</span>
+            <input id="search-filter" type="search" placeholder="Título o cuerpo de la noticia">
+          </label>
+
+          <div class="filter-actions">
+            <button id="flagged-filter" type="button" class="flag-filter-button" aria-pressed="false">
+              <span class="small-flag" aria-hidden="true">⚑</span> Solo con bandera
+            </button>
+            <button id="reset-filters" type="button" class="link-button inline">Restablecer mis filtros</button>
+            <button id="show-all-companies" type="button" class="link-button inline">Mostrar todas las compañías</button>
+          </div>
+        </section>
+
+        <div class="results-toolbar">
+          <h2 id="results-heading">0 noticias</h2>
+          <label>
+            <span>Ordenar por</span>
+            <select id="sort-filter">
+              <option value="desc">Más recientes primero</option>
+              <option value="asc">Más antiguas primero</option>
+            </select>
+          </label>
+        </div>
+
+        <section id="news-list" class="news-list" aria-live="polite"></section>
+
+        <section id="news-empty" class="empty-state" hidden>
+          <div class="empty-icon" aria-hidden="true">›</div>
+          <h2 id="empty-title">Selecciona una compañía</h2>
+          <p id="empty-message"></p>
+          <button id="empty-action" type="button" class="primary-button" data-empty-action="select">Seleccionar compañías</button>
+        </section>
+
+        <nav id="pagination" class="pagination" aria-label="Paginación" hidden>
+          <button id="prev-page" type="button" class="secondary-button">Anterior</button>
+          <span id="page-label">Página 1 de 1</span>
+          <button id="next-page" type="button" class="secondary-button">Siguiente</button>
+        </nav>
+      </section>
+
+      <section id="settings-view" class="view-section" aria-labelledby="settings-title" hidden>
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow purple">Preferencias personales</p>
+            <h1 id="settings-title">Mi configuración</h1>
+            <p>Define la vista que se aplicará cada vez que vuelvas a entrar.</p>
+          </div>
+          <button id="save-settings" type="button" class="primary-button">Guardar configuración</button>
+        </div>
+
+        <div class="settings-layout">
+          <section class="settings-card settings-companies-card">
+            <h2>Compañías predeterminadas</h2>
+            <p>Selecciona grupos completos o entidades específicas. Todos los usuarios pueden consultar todo el histórico.</p>
+            <input id="settings-company-search" class="company-search" type="search" placeholder="Buscar compañía o grupo">
+            <div id="settings-company-tree" class="company-tree"></div>
+          </section>
+
+          <div class="settings-stack">
+            <section class="settings-card">
+              <h2>Periodo inicial</h2>
+              <p>Se aplicará cuando abras el dashboard.</p>
+              <select id="settings-period">
+                <option value="7">Últimos 7 días</option>
+                <option value="30">Últimos 30 días</option>
+                <option value="90">Últimos 90 días</option>
+                <option value="365">Último año</option>
+                <option value="0">Todo el histórico</option>
+              </select>
+            </section>
+
+            <section class="settings-card">
+              <h2>Noticias patrocinadas</h2>
+              <label class="switch-row">
+                <input id="settings-sponsored" type="checkbox">
+                <span class="switch-control" aria-hidden="true"></span>
+                <span>Mostrar noticias patrocinadas por defecto</span>
+              </label>
+            </section>
+
+            <section class="settings-card">
+              <h2>Resultados por página</h2>
+              <select id="settings-page-size">
+                <option value="10">10 noticias</option>
+                <option value="25">25 noticias</option>
+                <option value="50">50 noticias</option>
+              </select>
+            </section>
+          </div>
+
+          <aside class="settings-card preview-card">
+            <h2>Vista previa</h2>
+            <p>Así se aplicarán tus filtros al iniciar sesión.</p>
+            <dl class="preview-list">
+              <div>
+                <dt>Compañías</dt>
+                <dd id="settings-preview-companies" class="company-chips"></dd>
+              </div>
+              <div>
+                <dt>Periodo</dt>
+                <dd id="settings-preview-period">Últimos 30 días</dd>
+              </div>
+              <div>
+                <dt>Patrocinadas</dt>
+                <dd id="settings-preview-sponsored">Mostrar todas</dd>
+              </div>
+              <div>
+                <dt>Resultados por página</dt>
+                <dd id="settings-preview-page-size">25 noticias</dd>
+              </div>
+            </dl>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="company-filter-dialog" class="company-dialog">
+    <form method="dialog" class="dialog-shell" onsubmit="return false;">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow purple">Filtro temporal</p>
+          <h2>Seleccionar compañías</h2>
+          <p>Esta selección no modificará tu configuración guardada.</p>
+        </div>
+        <button id="close-company-dialog" type="button" class="icon-button" aria-label="Cerrar">×</button>
+      </div>
+      <input id="filter-company-search" class="company-search" type="search" placeholder="Buscar compañía o grupo">
+      <div id="filter-company-tree" class="company-tree dialog-tree"></div>
+      <div class="dialog-actions">
+        <button id="cancel-company-filter" type="button" class="secondary-button">Cancelar</button>
+        <button id="apply-company-filter" type="button" class="primary-button">Aplicar filtro</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="loading-overlay" class="loading-overlay" hidden>
+    <div class="spinner" aria-hidden="true"></div>
+    <p id="loading-message">Cargando...</p>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

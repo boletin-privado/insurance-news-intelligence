@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Cambiar contraseña</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/reset.js" defer></script>
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <div class="login-art" aria-hidden="true">
+      <span class="beam beam-one"></span>
+      <span class="beam beam-two"></span>
+      <span class="beam beam-three"></span>
+    </div>
+
+    <section class="login-card" aria-labelledby="reset-title">
+      <div id="config-error" class="config-error" hidden></div>
+      <form id="password-form" novalidate>
+        <p class="eyebrow">Cuenta</p>
+        <h1 id="reset-title">Nueva contraseña</h1>
+        <p class="login-copy">Elige una contraseña de al menos ocho caracteres.</p>
+
+        <label for="new-password">Nueva contraseña</label>
+        <input id="new-password" type="password" autocomplete="new-password" required minlength="8">
+
+        <label for="confirm-password">Repetir contraseña</label>
+        <input id="confirm-password" type="password" autocomplete="new-password" required minlength="8">
+
+        <button id="password-submit" class="primary-button full-width" type="submit">Guardar contraseña</button>
+      </form>
+      <div id="reset-status" class="form-status" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+</body>
+</html>
