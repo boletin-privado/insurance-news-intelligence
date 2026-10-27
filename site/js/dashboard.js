@@ -469,6 +469,10 @@
     container.innerHTML =
       groupHtml + ungroupedHtml ||
       '<p class="empty-inline">No se han encontrado compañías.</p>';
+    
+    // Aplicar colores corporativos a los nombres del buscador.
+
+    window.COMPANY_COLORS?.paint(container);
   }
 
   function renderSelectedCompanyChips() {
@@ -501,6 +505,9 @@
         `;
       })
       .join('');
+    // Colorear las etiquetas de las compañías seleccionadas.
+    window.COMPANY_COLORS?.paint(container);
+    
   }
 
   function renderSettingsPreview() {
@@ -513,6 +520,9 @@
           `<span class="company-chip static">${escapeHtml(name)}</span>`
         ).join('')
       : '<span class="muted">Ninguna compañía. El dashboard no mostrará noticias al entrar.</span>';
+
+        // Colorear la vista previa de compañías predeterminadas.
+    window.COMPANY_COLORS?.paint($('#settings-preview-companies'));
 
     const periodValue = Number($('#settings-period').value || 30);
 
@@ -846,6 +856,8 @@
         </article>
       `;
     }).join('');
+
+    window.COMPANY_COLORS?.paint(list);
 
     const totalPages = Math.max(
       1,
