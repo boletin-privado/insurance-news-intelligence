@@ -1,0 +1,74 @@
+/* Insurance News Intelligence: visual sobrio y multifuente */
+.metrics-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+/* Compañías: texto neutro, sin colores corporativos */
+.news-badges { display:flex;align-items:center;flex-wrap:wrap;gap:.42rem !important; }
+.news-company-badge {
+  padding:0 !important;border:0 !important;border-radius:0 !important;
+  background:transparent !important;color:#52525b !important;
+  box-shadow:none !important;font-size:.82rem !important;font-weight:600 !important;
+}
+.news-company-badge + .news-company-badge::before { content:'·';margin-right:.42rem;color:#a1a1aa;font-weight:400; }
+.source-count-badge { display:inline-flex;align-items:center;padding:.2rem .52rem;border:1px solid #e4e4e7;border-radius:999px;background:#f4f4f5;color:#52525b;font-size:.74rem;font-weight:650; }
+
+.company-chip,.company-chip.static,.company-chip-all {
+  background:#f4f4f5 !important;color:#52525b !important;border:1px solid #e4e4e7 !important;
+  box-shadow:none !important;font-weight:550 !important;
+}
+
+/* Una fuente: sin caja interior y sin repetir título */
+.news-single-source { margin-top:.8rem;padding-top:.15rem; }
+.news-single-source-meta { display:flex;align-items:center;flex-wrap:wrap;gap:.45rem;margin-bottom:.55rem;color:#71717a;font-size:.78rem; }
+.news-single-source-meta .news-source-badge { padding:0;border:0;border-radius:0;background:transparent !important;color:#3f3f46;font-size:.78rem;font-weight:700;letter-spacing:0; }
+.news-single-source-meta .news-source-name { font-size:.8rem;font-weight:650;color:#3f3f46; }
+.news-single-source-meta .news-source-name a { color:inherit;text-decoration:none; }
+.news-single-source-meta .news-source-type,.news-single-source-meta .news-source-date { color:#71717a;font-size:.78rem; }
+.news-single-source-meta .news-source-repost { margin:0;color:#71717a;font-size:.78rem;font-style:italic; }
+.news-single-source details > summary { cursor:pointer;color:#3f3f46;font-size:.86rem;font-weight:650; }
+.news-single-source .news-source-body { margin-top:.7rem;color:#374151;line-height:1.65;overflow-wrap:anywhere; }
+
+/* Varias fuentes: cajas solo cuando separan publicaciones reales */
+.news-sources { margin-top:1rem;display:grid;gap:.8rem; }
+.news-sources-heading { margin:0;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#71717a;font-weight:700; }
+.news-source { border:1px solid #e4e4e7;border-radius:10px;padding:.9rem;background:#fafafa; }
+.news-source-header { display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.55rem; }
+.news-source-identity { display:flex;align-items:center;flex-wrap:wrap;gap:.42rem; }
+.news-source-badge { display:inline-flex;padding:.18rem .45rem;border-radius:999px;background:#3f3f46;color:#fff;font-size:.67rem;font-weight:750;letter-spacing:.035em; }
+.news-source-badge.linkedin,.news-source-badge.bds { background:#3f3f46; }
+.news-source-name { font-size:.86rem; }
+.news-source-type,.news-source-date { color:#71717a;font-size:.76rem; }
+.news-source-title { margin:.12rem 0 .48rem;font-size:.92rem; }
+.news-source-repost { margin:.2rem 0 .55rem;color:#71717a;font-size:.78rem;font-style:italic; }
+.news-source-body { color:#374151;line-height:1.62;overflow-wrap:anywhere; }
+.news-source-actions { margin-top:.7rem; }
+.news-source-link { color:#52525b;font-weight:650;text-decoration:underline;text-underline-offset:2px; }
+
+/* Modal y árboles de compañías: compacto y profesional */
+.company-dialog { color:#18181b; }
+.company-dialog .dialog-shell { padding:22px; }
+.company-dialog .dialog-heading { margin-bottom:15px; }
+.company-dialog .dialog-heading .eyebrow { display:none; }
+.company-dialog .dialog-heading h2 { margin:0 0 4px;font-size:19px;line-height:1.25;font-weight:650;letter-spacing:-.012em;color:#18181b; }
+.company-dialog .dialog-heading p { margin:0;font-size:12.5px;line-height:1.45;color:#71717a; }
+.company-dialog .icon-button { color:#71717a; }
+.company-dialog .company-search { min-height:38px;font-size:13.5px;border-color:#e4e4e7;background:#fff; }
+.company-dialog .company-search:focus { border-color:#a1a1aa;box-shadow:0 0 0 3px rgba(161,161,170,.13);outline:none; }
+.company-dialog .company-tree { margin-top:12px; }
+.company-dialog .company-group { margin:0;padding:7px 0;border-bottom:1px solid #f0f0f2; }
+.company-dialog .company-group:last-child { border-bottom:0; }
+.company-dialog .company-option { min-height:31px;padding:5px 7px;gap:8px;border:0 !important;border-radius:5px;background:transparent !important;box-shadow:none !important; }
+.company-dialog .company-option:hover { background:#f7f7f8 !important; }
+.company-dialog .company-option-name { padding:0 !important;border:0 !important;background:transparent !important;color:#27272a !important;box-shadow:none !important;font-size:13px;line-height:1.35;font-weight:500; }
+.company-dialog .company-option-group .company-option-name { font-weight:650; }
+.company-dialog .company-children { margin:2px 0 0 20px;padding-left:7px;border-left:1px solid #e4e4e7; }
+.company-dialog .company-option-child { padding-left:6px; }
+.company-dialog .company-kind { margin-left:auto;padding:0 !important;border:0 !important;background:transparent !important;color:#a1a1aa;font-size:10.5px;font-weight:400; }
+.company-dialog input[type='checkbox'] { width:14px;height:14px;accent-color:#52525b; }
+.company-dialog .dialog-actions { margin-top:15px;padding-top:14px;border-top:1px solid #e4e4e7; }
+
+/* Mismo árbol neutro en Configuración */
+.settings-companies-card .company-option-name { color:#27272a !important;background:transparent !important;border:0 !important;box-shadow:none !important; }
+.settings-companies-card .company-kind { color:#a1a1aa;background:transparent !important;border:0 !important; }
+
+@media (max-width:1100px){.metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:640px){.metrics-grid{grid-template-columns:1fr}.news-source-header{flex-direction:column}.company-dialog .dialog-shell{padding:17px;}}
