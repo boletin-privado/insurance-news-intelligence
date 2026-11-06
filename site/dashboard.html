@@ -8,34 +8,10 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/dashboard-design.css">
 
-  <style>
-    .metrics-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-    .source-count-badge { display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .6rem;border-radius:999px;background:#f0e8ff;color:#5b21b6;font-size:.78rem;font-weight:700; }
-    .news-sources { margin-top:1rem;display:grid;gap:.85rem; }
-    .news-sources-heading { margin:0;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:#6b7280; }
-    .news-source { border:1px solid #e5e7eb;border-radius:12px;padding:1rem;background:#fafafa; }
-    .news-source-header { display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.65rem; }
-    .news-source-identity { display:flex;align-items:center;flex-wrap:wrap;gap:.45rem; }
-    .news-source-badge { display:inline-flex;padding:.2rem .5rem;border-radius:999px;background:#111827;color:#fff;font-size:.7rem;font-weight:800;letter-spacing:.04em; }
-    .news-source-badge.linkedin { background:#0a66c2; }
-    .news-source-badge.bds { background:#5b21b6; }
-    .news-source-name { font-size:.9rem; }
-    .news-source-type,.news-source-date { color:#6b7280;font-size:.78rem; }
-    .news-source-repost { margin:.25rem 0 .65rem;color:#4b5563;font-size:.82rem;font-style:italic; }
-    .news-source-body { color:#374151;line-height:1.6;overflow-wrap:anywhere; }
-    .news-source-actions { margin-top:.75rem;display:flex;gap:.8rem;flex-wrap:wrap; }
-    .news-source-link { font-weight:700;color:#5b21b6;text-decoration:none; }
-    .news-source-link:hover { text-decoration:underline; }
-    .news-source-title { margin:.15rem 0 .55rem;font-size:.95rem; }
-    @media (max-width:1100px){.metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-    @media (max-width:640px){.metrics-grid{grid-template-columns:1fr}.news-source-header{flex-direction:column}}
-  </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
-  <script src="js/company-colors.js"></script>
   <script src="js/dashboard.js" defer></script>
-  <script src="js/dashboard-ui.js" defer></script>
   
 </head>
 <body class="app-page">
@@ -82,7 +58,7 @@
       </section>
     </main>
   </div>
-  <dialog id="company-filter-dialog" class="company-dialog"><form method="dialog" class="dialog-shell" onsubmit="return false;"><div class="dialog-heading"><div><p class="eyebrow purple">Filtro temporal</p><h2>Seleccionar compañías</h2><p>Esta selección no modificará tu configuración guardada.</p></div><button id="close-company-dialog" type="button" class="icon-button" aria-label="Cerrar">×</button></div><input id="filter-company-search" class="company-search" type="search" placeholder="Buscar compañía o grupo"><div id="filter-company-tree" class="company-tree dialog-tree"></div><div class="dialog-actions"><button id="cancel-company-filter" type="button" class="secondary-button">Cancelar</button><button id="apply-company-filter" type="button" class="primary-button">Aplicar filtro</button></div></form></dialog>
+  <dialog id="company-filter-dialog" class="company-dialog"><form method="dialog" class="dialog-shell" onsubmit="return false;"><div class="dialog-heading"><div><h2>Seleccionar compañías</h2><p>Esta selección no modificará tu configuración guardada.</p></div><button id="close-company-dialog" type="button" class="icon-button" aria-label="Cerrar">×</button></div><input id="filter-company-search" class="company-search" type="search" placeholder="Buscar compañía o grupo"><div id="filter-company-tree" class="company-tree dialog-tree"></div><div class="dialog-actions"><button id="cancel-company-filter" type="button" class="secondary-button">Cancelar</button><button id="apply-company-filter" type="button" class="primary-button">Aplicar filtro</button></div></form></dialog>
   <div id="loading-overlay" class="loading-overlay" hidden><div class="spinner" aria-hidden="true"></div><p id="loading-message">Cargando...</p></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
