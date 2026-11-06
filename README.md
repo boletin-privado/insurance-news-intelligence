@@ -1,8 +1,10 @@
 # Insurance News Intelligence
 
-Dashboard estático para GitHub Pages, autenticado con Supabase y conectado al histórico de noticias BDS.
+Dashboard estático para GitHub Pages, autenticado con Supabase y conectado al histórico de noticias del sector asegurador. Cada noticia representa un **acontecimiento** que puede estar respaldado por una o varias publicaciones (BDS y LinkedIn).
 
 ## Qué incluye
+
+- Modelo multifuente: `news` es el acontecimiento principal y `news_sources` contiene las publicaciones originales vinculadas (BDS, LinkedIn: perfil o empresa, con reposts).
 
 - Acceso mediante Supabase Auth con correo y contraseña.
 - Registro público desactivable; los usuarios se crean manualmente.
@@ -15,8 +17,17 @@ Dashboard estático para GitHub Pages, autenticado con Supabase y conectado al h
   - resultados por página.
 - Grupos y entidades diferenciados, por ejemplo AXA y AXA XL.
 - Filtros temporales que no sobrescriben las preferencias guardadas.
-- Cuerpo de la noticia plegado por defecto.
-- Fuente y número de noticia dentro de “Más información”.
+- Tarjetas adaptadas al número de fuentes (ver sección 9):
+  - una fuente: diseño simple, sin caja interior, sin contador y sin título repetido;
+  - dos o más fuentes: contador “N fuentes” y una caja por publicación vinculada.
+- Cuerpo de cada fuente (“Ver cuerpo”) plegado por defecto, siempre.
+- “Ver cuerpo” y “Más información del acontecimiento” con la misma jerarquía visual.
+- Distinción sobria de fuente: LinkedIn en azul, BDS en verde agua; BDS no se repite cuando fuente y nombre coinciden.
+- Compañías en texto neutro (`AXA · Línea Directa · Mapfre`), sin colores corporativos; el filtrado sigue usando `news.companies` y `company_catalog.match_names`.
+- Selector de compañías compacto (“Seleccionar compañías”), sin colores y con grupos y entidades.
+- Buscador por título o cuerpo, orden por fecha, filtro de patrocinadas y paginación.
+- Métricas: noticias encontradas, compañías seleccionadas, patrocinadas, con bandera y fuentes mostradas.
+- Fuente y fechas del acontecimiento dentro de “Más información del acontecimiento”.
 - Bandera discreta y compartida:
   - cualquier usuario autenticado puede marcar o desmarcar una noticia;
   - el estado es global para los tres usuarios;
@@ -27,14 +38,20 @@ Dashboard estático para GitHub Pages, autenticado con Supabase y conectado al h
 ## Estructura
 
 ```text
-.github/workflows/pages.yml        Despliegue de GitHub Pages
+.github/workflows/static.yml       Despliegue de GitHub Pages
 site/                              Web pública que GitHub Pages publica
   index.html                       Login sin branding interno
   dashboard.html                   Dashboard autenticado
   reset.html                       Cambio de contraseña
-  assets/                          CSS e imágenes
+  assets/css/styles.css            Estilos base
+  assets/css/dashboard-design.css  Diseño del dashboard: fuentes, compañías y selector
+  assets/img/                      Logotipos
   js/config.js                     URL y clave publicable de Supabase
-  js/dashboard.js                  Lógica del dashboard
+  js/supabase-client.js            Cliente de Supabase
+  js/login.js, js/reset.js         Acceso y cambio de contraseña
+  js/dashboard.js                  Lógica y render del dashboard (incluye las tarjetas multifuente)
+docs/                              Alcance funcional, checklist de despliegue y mockups
+apps-script/                       Reservada para la ingestión BDS/LinkedIn (no incluida en este repositorio)
 sql/001_dashboard_schema.sql       Tablas, RLS, preferencias y bandera
 sql/002_seed_company_catalog.sql   Catálogo inicial y nombres históricos
 sql/003_verify_installation.sql    Comprobaciones
@@ -131,6 +148,8 @@ insurance-news-intelligence
 7. GitHub mostrará la URL publicada.
 8. Vuelve a Supabase Auth y añade esa URL y `reset.html` a las URLs permitidas.
 
+El flujo de despliegue es `.github/workflows/static.yml` y publica el contenido de `site/` en cada push a `main`.
+
 ## 4. Primera prueba
 
 1. Abre la URL pública.
@@ -198,3 +217,47 @@ docs/mockups/
 ```
 
 La pantalla pública de login utiliza colores morados, pero no contiene logotipo ni referencias corporativas. El branding interno aparece solo después de validar la sesión.
+
+## 9. Noticias y fuentes
+
+El dashboard lee `news` junto con sus `news_sources` y decide cómo pintar cada tarjeta según cuántas fuentes tenga. Si una noticia no tiene filas en `news_sources`, se construye una fuente a partir de los campos de la propia `news` (compatibilidad con el histórico BDS).
+
+**Una fuente**
+
+```text
+02 NOV
+AXA · Línea Directa · Mapfre
+Título del acontecimiento
+BDS   Publicación   02 nov 2026, 08:58
+▸ Ver cuerpo
+▸ Más información del acontecimiento
+                               No patrocinada   ⚑
+```
+
+Sin contador, sin segunda caja, sin título duplicado y sin “Publicaciones vinculadas”.
+
+**Dos o más fuentes**
+
+```text
+Línea Directa   2 fuentes
+Título del acontecimiento
+PUBLICACIONES VINCULADAS
+┌ LINKEDIN  Carlos Rodriguez Ugarte  Perfil   28 oct
+│ Reposteado por Línea Directa Aseguradora
+│ ▸ Ver cuerpo
+└
+┌ LINKEDIN  Línea Directa Aseguradora  Empresa   28 oct
+│ ▸ Ver cuerpo
+└
+▸ Más información del acontecimiento
+```
+
+Reglas:
+
+- El contador solo aparece con 2 o más fuentes.
+- Las cajas interiores solo existen cuando hay varias publicaciones que separar.
+- “Ver cuerpo” nunca se abre automáticamente.
+- Hay una sola bandera por acontecimiento (`news.is_flagged`, `flagged_at`, `flagged_by`, vía `set_news_flag`).
+- Los cambios son solo de presentación: no afectan a la ingestión ni a la detección de compañías en Apps Script.
+
+Nota: el esquema SQL de `news_sources` no está incluido en `sql/`; la tabla debe existir en Supabase con las columnas que consulta `site/js/dashboard.js` (`source`, `source_name`, `source_type`, `source_url`, `source_author_url`, `source_title`, `body`, `body_segments`, `published_at`, `is_repost`, `reposted_by_name`, `sponsored`, etc.).
