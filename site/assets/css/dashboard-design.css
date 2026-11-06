@@ -19,12 +19,16 @@
 /* Una fuente: sin caja interior y sin repetir título */
 .news-single-source { margin-top:.8rem;padding-top:.15rem; }
 .news-single-source-meta { display:flex;align-items:center;flex-wrap:wrap;gap:.45rem;margin-bottom:.55rem;color:#71717a;font-size:.78rem; }
-.news-single-source-meta .news-source-badge { padding:0;border:0;border-radius:0;background:transparent !important;color:#3f3f46;font-size:.78rem;font-weight:700;letter-spacing:0; }
+.news-single-source-meta .news-source-badge { padding:.17rem .44rem;border:0;border-radius:999px;color:#fff;font-size:.7rem;font-weight:750;letter-spacing:.025em; }
+.news-single-source-meta .news-source-badge.linkedin { background:#0a66c2 !important; }
+.news-single-source-meta .news-source-badge.bds { background:#d8f3ec !important;color:#176b5b !important; }
 .news-single-source-meta .news-source-name { font-size:.8rem;font-weight:650;color:#3f3f46; }
 .news-single-source-meta .news-source-name a { color:inherit;text-decoration:none; }
 .news-single-source-meta .news-source-type,.news-single-source-meta .news-source-date { color:#71717a;font-size:.78rem; }
 .news-single-source-meta .news-source-repost { margin:0;color:#71717a;font-size:.78rem;font-style:italic; }
-.news-single-source details > summary { cursor:pointer;color:#3f3f46;font-size:.86rem;font-weight:650; }
+.news-single-source details > summary,
+.news-meta-details > summary,
+.news-source details > summary { cursor:pointer;color:#3f3f46;font-size:.86rem;font-weight:650;line-height:1.4; }
 .news-single-source .news-source-body { margin-top:.7rem;color:#374151;line-height:1.65;overflow-wrap:anywhere; }
 
 /* Varias fuentes: cajas solo cuando separan publicaciones reales */
@@ -34,7 +38,8 @@
 .news-source-header { display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.55rem; }
 .news-source-identity { display:flex;align-items:center;flex-wrap:wrap;gap:.42rem; }
 .news-source-badge { display:inline-flex;padding:.18rem .45rem;border-radius:999px;background:#3f3f46;color:#fff;font-size:.67rem;font-weight:750;letter-spacing:.035em; }
-.news-source-badge.linkedin,.news-source-badge.bds { background:#3f3f46; }
+.news-source-badge.linkedin { background:#0a66c2; }
+.news-source-badge.bds { background:#d8f3ec;color:#176b5b; }
 .news-source-name { font-size:.86rem; }
 .news-source-type,.news-source-date { color:#71717a;font-size:.76rem; }
 .news-source-title { margin:.12rem 0 .48rem;font-size:.92rem; }
