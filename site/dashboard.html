@@ -8,6 +8,17 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/dashboard-design.css">
 
+  <style>
+    /* Tablas BDS: formato legible y contenido dentro del ancho de la noticia. */
+    .bds-table-wrap{max-width:100%;overflow-x:auto;margin:1rem 0 1.25rem}
+    .bds-data-table{width:100%;border-collapse:collapse;background:#fff;color:#202124;font-size:.94em;line-height:1.45}
+    .bds-data-table th,.bds-data-table td{padding:.55rem .7rem;border:1px solid #d9d9df;text-align:left;vertical-align:top}
+    .bds-data-table thead th{background:#f5f4f7;color:#202124;font-weight:700;border-top:3px solid #a100ff}
+    .bds-data-table tbody tr:nth-child(even){background:#f8f8fa}
+    .bds-data-table th:not(:first-child),.bds-data-table td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}
+    @media(max-width:640px){.bds-data-table{min-width:520px}}
+  </style>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
@@ -61,5 +72,70 @@
   <dialog id="company-filter-dialog" class="company-dialog"><form method="dialog" class="dialog-shell" onsubmit="return false;"><div class="dialog-heading"><div><h2>Seleccionar compañías</h2><p>Esta selección no modificará tu configuración guardada.</p></div><button id="close-company-dialog" type="button" class="icon-button" aria-label="Cerrar">×</button></div><input id="filter-company-search" class="company-search" type="search" placeholder="Buscar compañía o grupo"><div id="filter-company-tree" class="company-tree dialog-tree"></div><div class="dialog-actions"><button id="cancel-company-filter" type="button" class="secondary-button">Cancelar</button><button id="apply-company-filter" type="button" class="primary-button">Aplicar filtro</button></div></form></dialog>
   <div id="loading-overlay" class="loading-overlay" hidden><div class="spinner" aria-hidden="true"></div><p id="loading-message">Cargando...</p></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script>
+    // El cuerpo llega como texto; convierte grupos de filas separadas por | en tablas HTML.
+    (function(){
+      function cellsFrom(el){
+        if(!el||el.matches('table,.bds-table-wrap')) return null;
+        var text=(el.innerText||el.textContent||'').replace(/\u00a0/g,' ').trim();
+        if(!text||text.indexOf('|')===-1) return null;
+        var lines=text.split(/\n+/).map(function(line){return line.trim();}).filter(Boolean);
+        if(lines.length!==1) return null;
+        var cells=lines[0].split('|').map(function(cell){return cell.trim();});
+        return cells.length>=2&&cells[0]&&cells[cells.length-1]?cells:null;
+      }
+      function makeTable(rows){
+        var wrap=document.createElement('div'); wrap.className='bds-table-wrap';
+        var table=document.createElement('table'); table.className='bds-data-table';
+        table.setAttribute('aria-label','Tabla incluida en la noticia');
+        var head=document.createElement('thead'), body=document.createElement('tbody');
+        var header=document.createElement('tr');
+        rows[0].forEach(function(value){var th=document.createElement('th');th.scope='col';th.textContent=value;header.appendChild(th);});
+        head.appendChild(header);
+        rows.slice(1).forEach(function(row){var tr=document.createElement('tr');row.forEach(function(value){var td=document.createElement('td');td.textContent=value;tr.appendChild(td);});body.appendChild(tr);});
+        table.appendChild(head);table.appendChild(body);wrap.appendChild(table);return wrap;
+      }
+      function convertContainer(container){
+        if(!container||container.matches('table,.bds-table-wrap')) return;
+        // Algunos cuerpos guardan todas las filas en un único párrafo con saltos de línea.
+        var ownText=(container.innerText||container.textContent||'').replace(/\u00a0/g,' ').trim();
+        var onlyLineBreaks=Array.prototype.every.call(container.children||[],function(child){return child.tagName==='BR';});
+        if((!container.children.length||onlyLineBreaks)&&ownText.indexOf('|')!==-1){
+          var ownRows=ownText.split(/\n+/).map(function(line){return line.trim();}).filter(Boolean).map(function(line){return line.split('|').map(function(cell){return cell.trim();});});
+          if(ownRows.length>=2&&ownRows.every(function(row){return row.length===ownRows[0].length&&row.length>=2&&row[0]&&row[row.length-1];})){
+            container.parentNode.replaceChild(makeTable(ownRows),container);return;
+          }
+        }
+        var children=Array.prototype.slice.call(container.children||[]);
+        if(!children.length) return;
+        var rows=children.map(cellsFrom),start=0;
+        while(start<rows.length){
+          if(!rows[start]){start++;continue;}
+          var end=start+1;
+          while(end<rows.length&&rows[end]&&rows[end].length===rows[start].length) end++;
+          if(end-start>=2){
+            var group=rows.slice(start,end);
+            // No convierte texto con pipes sueltos: exige encabezado y al menos una fila de datos.
+            var table=makeTable(group),first=children[start];
+            first.parentNode.insertBefore(table,first);
+            for(var i=start;i<end;i++) children[i].remove();
+            children.splice(start,end-start,table);rows.splice(start,end-start,null);
+            start++;
+          }else start=end;
+        }
+        // Recorre los contenedores interiores por si el cuerpo usa un wrapper por párrafo.
+        Array.prototype.slice.call(container.children||[]).forEach(function(child){convertContainer(child);});
+      }
+      function enhance(root){
+        (root||document).querySelectorAll('details').forEach(function(details){
+          var summary=details.querySelector(':scope > summary');
+          if(summary&&/ver cuerpo/i.test(summary.textContent||'')) convertContainer(details);
+        });
+      }
+      var target=document.getElementById('news-list');
+      if(target){new MutationObserver(function(){enhance(target);}).observe(target,{childList:true,subtree:true});enhance(target);}
+      document.addEventListener('DOMContentLoaded',function(){enhance(document);});
+    })();
+  </script>
 </body>
 </html>
